@@ -47,3 +47,4 @@ UserSchema.virtual('friendCount').get(function() {
 const User = model<IUser>('User', UserSchema);
 
 export default User;
+// User model for social network
