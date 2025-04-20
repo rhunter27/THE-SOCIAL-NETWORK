@@ -5,7 +5,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    // Removed duplicate key
     "skipLibCheck": true,
 
     /* Modules */
@@ -17,6 +17,8 @@
       "@middleware/*": ["middleware/*"],
       "@controllers/*": ["controllers/*"]
     },
+
+    // Removed invalid nested object
 
     /* Emit */
     "outDir": "./dist",

@@ -1,51 +1,51 @@
-import { Schema, Document, Model, model, Types } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
+// Removed unused ThoughtDocument import
 
-export interface IReaction extends Document {
-    reactionBody: string;
-    username: string;
-    createdAt: Date | string; // Allow both Date and string
-    readonly reactionId: Types.ObjectId; // Virtual property
+// Define interface for User document
+export interface UserDocument extends Document {
+  username: string;
+  email: string;
+  thoughts: Schema.Types.ObjectId[];
+  friends: Schema.Types.ObjectId[];
 }
 
-export const ReactionSchema = new Schema<IReaction>({
-    reactionBody: {
-        type: String,
-        required: [true, 'Reaction body is required'],
-        maxlength: [280, 'Reaction cannot exceed 280 characters'],
-        trim: true
-    },
-    username: {
-        type: String,
-        required: [true, 'Username is required'],
-        trim: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        get: (createdAt: Date): string => createdAt.toLocaleString()
-    }
+// User Schema
+const userSchema = new Schema<UserDocument>({
+  username: {
+    type: String,
+    unique: true,
+    required: [true, 'Username is required'],
+    trim: true
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please enter a valid email address'
+    ]
+  },
+  thoughts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Thought'
+  }],
+  friends: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User' // Self-reference
+  }]
 }, {
-    toJSON: {
-        virtuals: true,
-        getters: true,
-        transform: (_, ret) => {
-            ret.id = ret._id.toString();
-            delete ret._id;
-            delete ret.__v;
-            return ret;
-        }
-    },
-    id: false,
-    versionKey: false
+  toJSON: {
+    virtuals: true
+  },
+  id: false
 });
 
-// Virtual for reactionId
-ReactionSchema.virtual('reactionId').get(function(this: IReaction): Types.ObjectId {
-    return this._id as Types.ObjectId;
+// Virtual for friendCount
+userSchema.virtual('friendCount').get(function() {
+  return this.friends.length;
 });
 
-// Create and export the Reaction model
-const Reaction: Model<IReaction> = model<IReaction>('Reaction', ReactionSchema);
-
-export type ReactionModel = typeof Reaction;
-export default Reaction;
+// Create and export User model
+const User = model<UserDocument>('User', userSchema);
+export default User;

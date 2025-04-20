@@ -1,50 +1,30 @@
 import { Schema, model, Document } from 'mongoose';
-import Reaction, { IReaction } from '../models/Reaction';
-// Define the IThought interface
+// Ensure './User' exists or is correctly referenced before re-adding if needed
 
-interface IThought extends Document {
+export interface ThoughtDocument extends Document {
   thoughtText: string;
-  createdAt: Date;
   username: string;
-  userId: Schema.Types.ObjectId;
-  reactions: IReaction[];
+  user: Schema.Types.ObjectId;
+  // Add other thought fields as needed
 }
 
-const ThoughtSchema = new Schema<IThought>({
+const thoughtSchema = new Schema<ThoughtDocument>({
   thoughtText: {
     type: String,
     required: true,
     minlength: 1,
     maxlength: 280
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
   username: {
     type: String,
     required: true
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  reactions: [Reaction.schema]
-}, {
-  toJSON: {
-    virtuals: true,
-    transform: (_, ret) => {
-      ret.createdAt = ret.createdAt.toLocaleString();
-      return ret;
-    }
-  },
+    ref: 'User'
+  }
+  // Add other thought fields as needed
 });
 
-ThoughtSchema.virtual('reactionCount').get(function() {
-  return this.reactions.length;
-});
-
-const Thought = model<IThought>('Thought', ThoughtSchema);
-
+const Thought = model<ThoughtDocument>('Thought', thoughtSchema);
 export default Thought;
