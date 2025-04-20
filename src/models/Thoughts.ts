@@ -1,5 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
-import { Reaction, IReaction } from '../models/Reaction';
+import Reaction, { IReaction } from '../models/Reaction';
 // Define the IThought interface
 
 interface IThought extends Document {
@@ -34,7 +34,7 @@ const ThoughtSchema = new Schema<IThought>({
 }, {
   toJSON: {
     virtuals: true,
-    transform: (doc, ret) => {
+    transform: (_, ret) => {
       ret.createdAt = ret.createdAt.toLocaleString();
       return ret;
     }

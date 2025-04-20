@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 
 interface IUser extends Document {
   _id: Types.ObjectId;
@@ -16,7 +16,11 @@ const UserSchema = new Schema<IUser>({
     required: [true, 'Username is required'],
     trim: true
   },
-  // ... other fields
+  friends: {
+    type: [Schema.Types.ObjectId],
+    ref: 'User',
+    default: []
+  },
 }, {
   toJSON: { virtuals: true },
   id: false

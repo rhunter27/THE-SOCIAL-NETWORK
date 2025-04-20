@@ -1,46 +1,51 @@
 import { Schema, Document, Model, model, Types } from 'mongoose';
 
-// Define the IReaction interface
 export interface IReaction extends Document {
-  reactionBody: string;
-  username: string;
-  createdAt: Date | string; // Allow both Date and string for compatibility
-  readonly reactionId: Types.ObjectId; // Virtual property
+    reactionBody: string;
+    username: string;
+    createdAt: Date | string; // Allow both Date and string
+    readonly reactionId: Types.ObjectId; // Virtual property
 }
 
-// Define the Reaction schema
-export const ReactionSchema = new Schema<IReaction>(
-  {
+export const ReactionSchema = new Schema<IReaction>({
     reactionBody: {
-      type: String,
-      required: [true, 'Reaction body is required'],
-      maxlength: [280, 'Reaction cannot exceed 280 characters'],
+        type: String,
+        required: [true, 'Reaction body is required'],
+        maxlength: [280, 'Reaction cannot exceed 280 characters'],
+        trim: true
     },
     username: {
-      type: String,
-      required: [true, 'Username is required'],
+        type: String,
+        required: [true, 'Username is required'],
+        trim: true
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
-      get: (createdAt: Date): string => createdAt.toLocaleString(),
-    },
-  },
-  {
+        type: Date,
+        default: Date.now,
+        get: (createdAt: Date): string => createdAt.toLocaleString()
+    }
+}, {
     toJSON: {
-      virtuals: true,
-      getters: true,
+        virtuals: true,
+        getters: true,
+        transform: (_, ret) => {
+            ret.id = ret._id.toString();
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
     },
     id: false,
-    versionKey: false,
-    timestamps: false, // Explicitly disable if not using timestamps
-  }
-);
+    versionKey: false
+});
 
-// Virtual for reactionId with proper typing
-ReactionSchema.virtual('reactionId').get(function (this: IReaction) {
-  return this._id;
+// Virtual for reactionId
+ReactionSchema.virtual('reactionId').get(function(this: IReaction): Types.ObjectId {
+    return this._id as Types.ObjectId;
 });
 
 // Create and export the Reaction model
-export const Reaction: Model<IReaction> = model<IReaction>('Reaction', ReactionSchema);
+const Reaction: Model<IReaction> = model<IReaction>('Reaction', ReactionSchema);
+
+export type ReactionModel = typeof Reaction;
+export default Reaction;
