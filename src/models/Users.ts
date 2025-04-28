@@ -16,6 +16,11 @@ const UserSchema = new Schema<IUser>({
     required: [true, 'Username is required'],
     trim: true
   },
+  thoughts: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Thoughts',
+    default: []
+  },
   friends: {
     type: [Schema.Types.ObjectId],
     ref: 'User',

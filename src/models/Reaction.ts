@@ -10,7 +10,7 @@ export interface UserDocument extends Document {
 }
 
 // User Schema
-const userSchema = new Schema<UserDocument>({
+const userSchema: Schema<UserDocument> = new Schema<UserDocument>({
   username: {
     type: String,
     unique: true,

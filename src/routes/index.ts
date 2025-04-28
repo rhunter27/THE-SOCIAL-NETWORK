@@ -1,11 +1,6 @@
-import { Router } from 'express';
-import userRoutes from './userRoutes';
-import thoughtRoutes from './thoughtRoutes';
-// Import the user and thought routes
-
+import {Router} from 'express';
+import api from './api/index';
 const router = Router();
-
-router.use('/users', userRoutes);
-router.use('/thoughts', thoughtRoutes);
+router.use ('/api', api);
 
 export default router;

@@ -22,9 +22,9 @@ const thoughtSchema = new Schema<ThoughtDocument>({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
   // Add other thought fields as needed
 });
 
-const Thought = model<ThoughtDocument>('Thought', thoughtSchema);
+const Thought = model<ThoughtDocument>('Thoughts', thoughtSchema);
 export default Thought;
